@@ -32,7 +32,7 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost", cast=Csv())
 
 # Local Storage
-STORAGE_BASE_DIR = config("STORAGE_BASE_DIR", default=BASE_DIR)
+STORAGE_BASE_DIR = Path(config("STORAGE_BASE_DIR", default=BASE_DIR))
 
 # Application definition
 
