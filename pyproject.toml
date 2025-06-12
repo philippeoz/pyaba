@@ -13,11 +13,11 @@ dependencies = [
     "pillow>=11.2.1",
     "python-decouple>=3.8",
     "whitenoise[brotli]>=6.9.0",
+    "django-extensions>=4.1",
 ]
 
 [dependency-groups]
 dev = [
-    "django-extensions>=4.1",
     "ipython>=9.3.0",
     "model-bakery>=1.20.5",
     "pytest>=8.4.0",
