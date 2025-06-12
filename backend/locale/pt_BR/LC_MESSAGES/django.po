@@ -1,0 +1,106 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-10 16:20-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: apps/api/models.py:12 apps/api/models.py:31
+msgid "Título"
+msgstr ""
+
+#: apps/api/models.py:13
+msgid "Imagem"
+msgstr ""
+
+#: apps/api/models.py:14
+msgid "Data de início"
+msgstr ""
+
+#: apps/api/models.py:15
+msgid "Data de fim"
+msgstr ""
+
+#: apps/api/models.py:18 apps/api/models.py:30
+msgid "Evento"
+msgstr ""
+
+#: apps/api/models.py:19
+msgid "Eventos"
+msgstr ""
+
+#: apps/api/models.py:32
+msgid "Início"
+msgstr ""
+
+#: apps/api/models.py:33
+msgid "Fim"
+msgstr ""
+
+#: apps/api/models.py:34
+msgid "Vagas"
+msgstr ""
+
+#: apps/api/models.py:37 apps/api/models.py:68
+msgid "Tutorial"
+msgstr ""
+
+#: apps/api/models.py:38
+msgid "Tutoriais"
+msgstr ""
+
+#: apps/api/models.py:49
+msgid "Nome completo"
+msgstr ""
+
+#: apps/api/models.py:50
+msgid "E-mail"
+msgstr ""
+
+#: apps/api/models.py:51
+msgid "Data de nascimento"
+msgstr ""
+
+#: apps/api/models.py:52
+msgid "CPF"
+msgstr ""
+
+#: apps/api/models.py:55 apps/api/models.py:71
+msgid "Participante"
+msgstr ""
+
+#: apps/api/models.py:56
+msgid "Participantes"
+msgstr ""
+
+#: apps/api/models.py:73
+msgid "Confirmado"
+msgstr ""
+
+#: apps/api/models.py:74
+msgid "Certificado gerado"
+msgstr ""
+
+#: apps/api/models.py:75
+msgid "Data de inscrição"
+msgstr ""
+
+#: apps/api/models.py:78
+msgid "Inscrição"
+msgstr ""
+
+#: apps/api/models.py:79
+msgid "Inscrições"
+msgstr ""

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmação de Inscrição - Ação Necessária</title>
+    <style>
+        body {
+            background: #f7f7fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background: #fff;
+            max-width: 540px;
+            margin: 32px auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 32px 28px 24px 28px;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #ececec;
+        }
+        .header h1 {
+            color: #f59e42;
+            font-size: 1.7em;
+            margin: 0;
+            font-weight: 700;
+        }
+        .pending {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #f59e42;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+            font-size: 1.1em;
+        }
+        .details {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 18px 18px 10px 18px;
+            margin: 18px 0 24px 0;
+            font-size: 1.05em;
+        }
+        .details strong {
+            color: #3b82f6;
+        }
+        .confirmation-area {
+            margin: 28px 0 18px 0;
+            text-align: center;
+        }
+        .confirmation-link {
+            display: inline-block;
+            background: linear-gradient(90deg, #3b82f6 60%, #2563eb 100%);
+            color: #fff !important;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.13em;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.09);
+            transition: background 0.2s;
+        }
+        .confirmation-link:hover {
+            background: linear-gradient(90deg, #2563eb 60%, #3b82f6 100%);
+        }
+        .footer {
+            margin-top: 32px;
+            font-size: 0.97em;
+            color: #666;
+            text-align: center;
+        }
+        .signature {
+            margin-top: 24px;
+            color: #222;
+        }
+        .auto {
+            color: #aaa;
+            font-size: 0.93em;
+            margin-top: 18px;
+        }
+        a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Confirmação Pendente</h1>
+        </div>
+        <p>Olá <strong>{{ name }}</strong>,</p>
+        <div class="pending">
+            <span>⚠️</span>
+            <span>Sua inscrição ainda não está confirmada!</span>
+        </div>
+        <p>
+            Recebemos sua solicitação de inscrição no tutorial <strong>{{ tutorial_title }}</strong>, parte do evento <strong>{{ event_title }}</strong>.
+        </p>
+        <div class="details">
+            <div><strong>📅 Data:</strong> {{ tutorial_start_date }}</div>
+            <div><strong>🕒 Horário:</strong> {{ tutorial_date_hour }}</div>
+            <div><strong>📍 Local:</strong> {{ tutorial_location }}</div>
+        </div>
+        <div class="confirmation-area">
+            <p style="margin-bottom: 12px; font-size: 1.08em;">
+                Para garantir sua vaga, é necessário confirmar sua inscrição clicando no botão abaixo:
+            </p>
+            <a href="{{ confirmation_link }}" class="confirmation-link" target="_blank">
+                Confirmar minha inscrição
+            </a>
+            <p style="margin-top: 14px; color: #f59e42; font-size: 0.98em;">
+                <strong>Atenção:</strong> Sua inscrição só será efetivada após a confirmação.
+            </p>
+        </div>
+        <p>
+            Caso não tenha solicitado esta inscrição, basta ignorar este e-mail.
+        </p>
+        <div class="signature">
+            <p>Esperamos por você!</p>
+            <p>
+                Atenciosamente,<br>
+                <strong>Equipe de Organização</strong><br>
+                {{ event_title }}
+            </p>
+        </div>
+        <div class="footer auto">
+            <em>Este e-mail foi enviado automaticamente. Por favor, não responda diretamente a ele.</em>
+        </div>
+    </div>
+</body>
+</html>
