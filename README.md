@@ -4,6 +4,8 @@
 
 A estrutura do repositório foi pensada para ser simples de usar: frontend e backend estão juntos, facilitando a instalação, deploy e manutenção, seja para eventos pequenos ou grandes. Assim, qualquer pessoa ou comunidade pode subir rapidamente uma instância e começar a usar!
 
+Tem uma versão rodando aqui no [tutoriais.rapadura.org](https://tutoriais.rapadura.org/) 😁
+
 ---
 
 ## Funcionalidades
@@ -124,7 +126,7 @@ quasar dev
 npx quasar dev
 ```
 
-Acesse o frontend em http://localhost:9000 e o backend em http://localhost:8000.
+Acesse o frontend em http://localhost:9000 e o backend em http://localhost:8000 ou em http://localhost:9000/api/ (no arquivo quasar.config.js, existe um proxy onde as requisições feitas para /api apontam para http://localhost:8000).
 
 Você vai reparar que o quasar vai servir a partir do caminho `/static/`, isso é para que, após o build do frontend, onde o resultado é um arquivo index.html e outros arquivos estáticos, o django consiga servir os arquivos estáticos (css/js/etc) do frontend com o whitenoise. Vamos injetar na nossa aplicação django o resultado do build do quasar. 😁
 
