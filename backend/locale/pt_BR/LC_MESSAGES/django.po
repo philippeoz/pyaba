@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-10 16:20-0300\n"
+"POT-Creation-Date: 2025-06-13 18:04-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,90 +17,254 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-#: apps/api/models.py:12 apps/api/models.py:31
+
+#: apps/api/models.py:20 apps/api/models.py:73
 msgid "Título"
 msgstr ""
 
-#: apps/api/models.py:13
+#: apps/api/models.py:22
+msgid "Slug"
+msgstr ""
+
+#: apps/api/models.py:24
+msgid "Identificador único do evento, usado em URLs"
+msgstr ""
+
+#: apps/api/models.py:29
 msgid "Imagem"
 msgstr ""
 
-#: apps/api/models.py:14
+#: apps/api/models.py:30
 msgid "Data de início"
 msgstr ""
 
-#: apps/api/models.py:15
+#: apps/api/models.py:31
 msgid "Data de fim"
 msgstr ""
 
-#: apps/api/models.py:18 apps/api/models.py:30
+#: apps/api/models.py:32 apps/api/models.py:88
+msgid "Descrição"
+msgstr ""
+
+#: apps/api/models.py:34 apps/api/models.py:81
+msgid "Localização"
+msgstr ""
+
+#: apps/api/models.py:36
+msgid "Local onde o evento será realizado"
+msgstr ""
+
+#: apps/api/models.py:41
+msgid "URL do evento"
+msgstr ""
+
+#: apps/api/models.py:43
+msgid "URL do evento para mais informações ou inscrições"
+msgstr ""
+
+#: apps/api/models.py:49 apps/api/models.py:72
 msgid "Evento"
 msgstr ""
 
-#: apps/api/models.py:19
+#: apps/api/models.py:50
 msgid "Eventos"
 msgstr ""
 
-#: apps/api/models.py:32
-msgid "Início"
-msgstr ""
-
-#: apps/api/models.py:33
-msgid "Fim"
-msgstr ""
-
-#: apps/api/models.py:34
-msgid "Vagas"
-msgstr ""
-
-#: apps/api/models.py:37 apps/api/models.py:68
-msgid "Tutorial"
-msgstr ""
-
-#: apps/api/models.py:38
-msgid "Tutoriais"
-msgstr ""
-
-#: apps/api/models.py:49
-msgid "Nome completo"
-msgstr ""
-
-#: apps/api/models.py:50
-msgid "E-mail"
-msgstr ""
-
-#: apps/api/models.py:51
-msgid "Data de nascimento"
-msgstr ""
-
-#: apps/api/models.py:52
-msgid "CPF"
-msgstr ""
-
-#: apps/api/models.py:55 apps/api/models.py:71
-msgid "Participante"
-msgstr ""
-
-#: apps/api/models.py:56
-msgid "Participantes"
-msgstr ""
-
-#: apps/api/models.py:73
-msgid "Confirmado"
+#: apps/api/models.py:61 apps/api/models.py:115
+msgid "A data de início deve ser anterior à data de fim."
 msgstr ""
 
 #: apps/api/models.py:74
-msgid "Certificado gerado"
+msgid "Início"
 msgstr ""
 
 #: apps/api/models.py:75
-msgid "Data de inscrição"
+msgid "Fim"
+msgstr ""
+
+#: apps/api/models.py:76
+msgid "Vagas"
 msgstr ""
 
 #: apps/api/models.py:78
+msgid "Duração"
+msgstr ""
+
+#: apps/api/models.py:78
+msgid "Duração do tutorial em horas, minutos e segundos"
+msgstr ""
+
+#: apps/api/models.py:83
+msgid "Local onde o tutorial será realizado"
+msgstr ""
+
+#: apps/api/models.py:89
+msgid "Breve descrição do conteúdo do tutorial"
+msgstr ""
+
+#: apps/api/models.py:96 apps/api/models.py:158
+msgid "Instrutores"
+msgstr ""
+
+#: apps/api/models.py:98
+msgid "Instrutores que ministrarão o tutorial"
+msgstr ""
+
+#: apps/api/models.py:102 apps/api/models.py:196
+msgid "Tutorial"
+msgstr ""
+
+#: apps/api/models.py:103
+msgid "Tutoriais"
+msgstr ""
+
+#: apps/api/models.py:127
+msgid "Este participante já está inscrito neste tutorial."
+msgstr ""
+
+#: apps/api/models.py:130
+msgid "Não há vagas disponíveis para este tutorial."
+msgstr ""
+
+#: apps/api/models.py:133
+msgid "O participante não está disponível para este tutorial."
+msgstr ""
+
+#: apps/api/models.py:152
+msgid "Nome"
+msgstr ""
+
+#: apps/api/models.py:153
+msgid "Biografia"
+msgstr ""
+
+#: apps/api/models.py:154
+msgid "Foto"
+msgstr ""
+
+#: apps/api/models.py:157
+msgid "Instrutor"
+msgstr ""
+
+#: apps/api/models.py:169
+msgid "Nome completo"
+msgstr ""
+
+#: apps/api/models.py:170
+msgid "E-mail"
+msgstr ""
+
+#: apps/api/models.py:171
+msgid "Data de nascimento"
+msgstr ""
+
+#: apps/api/models.py:172
+msgid "CPF"
+msgstr ""
+
+#: apps/api/models.py:175 apps/api/models.py:199
+msgid "Participante"
+msgstr ""
+
+#: apps/api/models.py:176
+msgid "Participantes"
+msgstr ""
+
+#: apps/api/models.py:201
+msgid "Confirmado"
+msgstr ""
+
+#: apps/api/models.py:202
+msgid "Certificado gerado"
+msgstr ""
+
+#: apps/api/models.py:203
+msgid "Data de inscrição"
+msgstr ""
+
+#: apps/api/models.py:205
+msgid "UUID"
+msgstr ""
+
+#: apps/api/models.py:209
+msgid ""
+"Identificador único da inscrição, usado para certificados e verificações"
+msgstr ""
+
+#: apps/api/models.py:213
 msgid "Inscrição"
 msgstr ""
 
-#: apps/api/models.py:79
+#: apps/api/models.py:214
 msgid "Inscrições"
+msgstr ""
+
+#: apps/api/validators.py:33
+msgid ""
+"CPF inválido. Deve conter 11 dígitos e ser válido segundo as regras "
+"brasileiras."
+msgstr ""
+
+#: apps/api/views.py:24
+msgid "Event not found"
+msgstr ""
+
+#: apps/api/views.py:27
+msgid "Event image not found"
+msgstr ""
+
+#: apps/api/views.py:45
+msgid "Instructor not found"
+msgstr ""
+
+#: apps/api/views.py:48
+msgid "Instructor photo not found"
+msgstr ""
+
+#: apps/api/views.py:101
+msgid "Invalid UUID"
+msgstr ""
+
+#: apps/api/views.py:106
+msgid "Registration not found"
+msgstr ""
+
+#: apps/api/views.py:131 apps/api/views.py:174
+msgid "tutorial_id and correct cpf are required"
+msgstr ""
+
+#: apps/api/views.py:139
+msgid "Invalid date format for birthday. Use DD/MM/YYYY."
+msgstr ""
+
+#: apps/api/views.py:146
+msgid "Name, email, and birthday are required for new attendees."
+msgstr ""
+
+#: apps/api/views.py:156 apps/api/views.py:185 apps/api/views.py:215
+msgid "Tutorial with this ID does not exist"
+msgstr ""
+
+#: apps/api/views.py:180
+msgid "Attendee with this CPF does not exist"
+msgstr ""
+
+#: apps/api/views.py:193
+msgid "Attendee is not subscribed to this tutorial"
+msgstr ""
+
+#: apps/api/views.py:205
+msgid "tutorial_id and cpf are required"
+msgstr ""
+
+#: config/urls.py:25
+msgid "Administração do Portal de Eventos"
+msgstr ""
+
+#: config/urls.py:26
+msgid "Portal de Eventos (Admin)"
+msgstr ""
+
+#: config/urls.py:27
+msgid "Gerenciamento do Portal de Eventos"
 msgstr ""

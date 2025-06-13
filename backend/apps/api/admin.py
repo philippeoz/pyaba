@@ -3,8 +3,9 @@ from apps.api import models
 
 
 class RegistrationAdmin(admin.ModelAdmin):
+    list_per_page = 20
     list_display = ("attendee__full_name", "attendee__email", "tutorial__title", "tutorial__event__title")
-    search_fields = ("attendee__name", "tutorial__title")
+    search_fields = ("attendee__full_name", "tutorial__title")
     list_filter = ("tutorial__title", "tutorial__event__title")
     ordering = ("-tutorial__start_datetime", "tutorial__title", "attendee__full_name")
 
