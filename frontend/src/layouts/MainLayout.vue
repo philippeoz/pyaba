@@ -28,7 +28,7 @@
     <q-footer>
       <q-toolbar>
         <q-space></q-space>
-        <q-btn flat no-caps rounded size="sm" href="http://github.com/philippeoz" target="_blank">
+        <q-btn flat no-caps rounded size="sm" href="https://github.com/philippeoz/tutoriais" target="_blank">
           <code>
             {{ "{} with 💖 by @philippeoz" }}
           </code>

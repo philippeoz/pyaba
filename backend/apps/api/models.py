@@ -234,7 +234,7 @@ def send_confirmation_email(sender, instance, created, **kwargs):
                 "tutorial_title": instance.tutorial.title,
                 "event_title": instance.tutorial.event.title,
                 "tutorial_start_date": instance.tutorial.start_datetime.strftime("%d/%m/%Y"),
-                "tutorial_date_hour": instance.tutorial.start_datetime.strftime("%H:%M"),
+                "tutorial_date_hour": timezone.localtime(instance.tutorial.start_datetime).strftime("%H:%M"),
                 "tutorial_location": instance.tutorial.location,
                 "confirmation_link": f"{settings.SITE_URL}/confirmation/{instance.uuid}",
             },

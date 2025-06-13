@@ -13,7 +13,7 @@
           <q-item-section middle>
             <q-item-label lines="3">{{ tutorial.title }}</q-item-label>
             <q-item-label caption class="text-grey-7">{{ tutorial.location }}</q-item-label>
-            <q-item-label lines="1" v-if="$q.screen.lt.md">
+            <q-item-label lines="2" v-if="$q.screen.lt.md">
               <q-chip color="secondary" v-for="instructor in tutorial.instructors" :key="instructor.id" size="12px">
                 <q-avatar>
                   <q-img :src="instructor.photo_url" />

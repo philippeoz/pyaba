@@ -9,6 +9,7 @@ export const useEventStore = defineStore('event', {
     events: [],
     selectedEvent: null,
     loadingMessages: [
+      // Mensagens de loading geradas carinhosamente pelo chat gpt 🤣
       "🥹 É lento, mas é honesto...",
       "🐢 Está lento, mas foi feito com carinho...",
       "💾 Carregando... porque o rápido era pago.",

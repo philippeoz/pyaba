@@ -4,9 +4,10 @@
       <q-img :src="event.image_url" fit="fill" height="150px" />
 
       <q-card-section>
-        <q-btn fab color="secondary" icon="web" class="absolute"
+        <q-btn round color="secondary" icon="web" class="absolute"
           style="top: 0; right: 12px; transform: translateY(-50%);"
           :href="event.url"
+          size="md"
         >
           <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
             Site do evento
