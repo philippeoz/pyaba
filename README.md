@@ -1,6 +1,6 @@
-# Tutoriais
+# pyaba 
 
-**Tutoriais** é uma plataforma open source para gerenciar inscrições em tutoriais que acontecem em eventos, feita para ajudar comunidades a organizar, divulgar e facilitar a participação em atividades técnicas e educacionais.
+Uma plataforma open source para gerenciar inscrições em tutoriais que acontecem em eventos, feita para ajudar comunidades a organizar, divulgar e facilitar a participação em atividades técnicas e educacionais.
 
 A estrutura do repositório foi pensada para ser simples de usar: frontend e backend estão juntos, facilitando a instalação, deploy e manutenção, seja para eventos pequenos ou grandes. Assim, qualquer pessoa ou comunidade pode subir rapidamente uma instância e começar a usar!
 
