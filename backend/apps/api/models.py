@@ -143,6 +143,13 @@ class Tutorial(models.Model):
         """
         return self.registrations.filter(confirmed=True)
 
+    @property
+    def has_slots_available(self):
+        """
+        Check if there are available slots for the tutorial
+        """
+        return self.confirmed_registrations.count() < self.vacancies
+
 
 class Instructor(models.Model):
     """

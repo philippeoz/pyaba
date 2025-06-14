@@ -134,10 +134,13 @@ class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
         except Registration.DoesNotExist:
             return Response({"error": _("Registration not found")}, status=status.HTTP_400_BAD_REQUEST)
 
-        registration.confirmed = True
-        registration.save()
+        if registration.tutorial.has_slots_available:
+            registration.confirmed = True
+            registration.save()
+
         return Response(
             {
+                "confirmed": registration.confirmed,
                 "event_title": registration.tutorial.event.title,
                 "event_slug": registration.tutorial.event.slug,
                 "tutorial_title": registration.tutorial.title,

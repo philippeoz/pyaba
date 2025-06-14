@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center q-pa-md column items-start">
-    <template v-if="subscriptionData">
+    <template v-if="subscriptionData && subscriptionData?.confirmed == true">
       <p class="text-h6">
         🎉 Parabéns! 🎉
       </p>
@@ -14,10 +14,28 @@
         que acontecerá no evento <strong>{{ subscriptionData?.event_title }}</strong>
       </p>
       <p>
-        <q-img width="300px" src="~/assets/minions.gif"/>
+        <q-img width="300px" src="~/assets/minions.gif" />
       </p>
       <q-btn color="secondary" :to="`/${subscriptionData?.event_slug}`">
         Voltar para tutoriais
+      </q-btn>
+    </template>
+    <template v-if="subscriptionData && subscriptionData?.confirmed == false">
+      <p class="text-h6">
+        😔 Ops! As vagas se esgotaram.
+      </p>
+      <p class="text-h7 q-mb-0 q-pb-0">
+        Infelizmente você não conseguiu confirmar sua inscrição a tempo.
+      </p>
+      <p class="text-h7">
+        O tutorial <strong>{{ subscriptionData?.tutorial_title }}</strong> já está com todas as vagas preenchidas.
+      </p>
+      <p class="text-h7">
+        Mas não desanime! Ainda dá tempo de participar de outros tutoriais no evento <strong>{{ subscriptionData?.event_title }}</strong>.
+      </p>
+      <q-img width="300px" src="~/assets/sad-minions.gif" />
+      <q-btn color="secondary" class="q-mt-md" :to="`/${subscriptionData?.event_slug}`">
+        Ver outros tutoriais
       </q-btn>
     </template>
   </q-page>
