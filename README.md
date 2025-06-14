@@ -1,4 +1,4 @@
-# pyaba 
+# pyaba 🐟
 
 Uma plataforma open source para gerenciar inscrições em tutoriais que acontecem em eventos, feita para ajudar comunidades a organizar, divulgar e facilitar a participação em atividades técnicas e educacionais.
 
