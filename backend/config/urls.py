@@ -20,16 +20,17 @@ from django.urls import path, re_path, include
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
+from apps.api.views import index
 
-# Site name for the admin interface
-admin.site.site_header = _("Administração do Portal de Eventos")
-admin.site.site_title = _("Portal de Eventos (Admin)")
-admin.site.index_title = _("Gerenciamento do Portal de Eventos")
-admin.site.site_url = None  # Disable the link to the admin site from the header
+
+admin.site.site_header = _("Gerenciamento de Tutoriais")
+admin.site.site_title = _("Pyaba 🐟")
+admin.site.index_title = _("Tudo pronto pra mais um evento incrível?")
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("apps.api.urls")),
-    re_path(r"^(?!api/|admin/).*$", TemplateView.as_view(template_name="index.html"), name="spa"),
+    re_path(r"^(?!api/|admin/)(?P<slug>[\w-]+)/?$", index, name="spa-event-slug"),
+    re_path(r"^(?!api/|admin/).*$", index, name="spa"),
 ]

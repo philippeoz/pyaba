@@ -4,6 +4,9 @@ from django.http import FileResponse, Http404
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.db import transaction
+from django.conf import settings
+from django.shortcuts import render
+from django.urls import reverse
 
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -12,6 +15,32 @@ from rest_framework import status
 
 from apps.api.models import Event, Tutorial, Instructor, Registration, Attendee
 from apps.api.serializers import EventReadOnlySerializer, TutorialReadOnlySerializer
+
+
+def index(request, slug=None):
+    """
+    Index view that render the main template whit custom meta tags as context for the SPA.
+    """
+    event = None
+
+    if slug:
+        try:
+            event = Event.objects.get(slug=slug)
+        except Event.DoesNotExist:
+            pass
+
+    return render(
+        request,
+        "index.html",
+        {
+            "title": (event and f"{event.title} | Tutoriais") or _("Tutoriais | Pyaba 🐟"),
+            "description": (event and event.description)
+            or _("Inscreva-se nos tutoriais dos eventos da sua comunidade! 🥰"),
+            "image_url": (event and settings.SITE_URL + reverse("event-image", kwargs={"pk": event.pk}))
+            or "tutorial.jpg",
+            "absolute_url": f"{settings.SITE_URL}/{slug}/" if slug else settings.SITE_URL,
+        },
+    )
 
 
 def event_image(request, pk):

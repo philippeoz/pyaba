@@ -53,10 +53,10 @@ export default defineConfig((ctx) => {
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
       extendWebpack(cfg) {
-        cfg.output.publicPath = '/static/';
+        cfg.output.publicPath = '/';
       },
 
-      publicPath: '/static/',
+      publicPath: '/',
       // analyze: true,
       // env: {},
       // rawDefine: {}
