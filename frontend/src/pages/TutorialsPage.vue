@@ -10,7 +10,7 @@
 
       <q-expansion-item v-for="tutorial in tutorials" :key="tutorial.id" group="tutorials">
         <template v-slot:header>
-          <q-item-section middle>
+          <q-item-section middle class="col-5">
             <q-item-label lines="3">{{ tutorial.title }}</q-item-label>
             <q-item-label caption class="text-grey-7">{{ tutorial.location }}</q-item-label>
             <q-item-label lines="2" v-if="$q.screen.lt.md">
@@ -22,8 +22,8 @@
               </q-chip>
             </q-item-label>
           </q-item-section>
-          <q-item-section v-if="$q.screen.gt.sm">
-            <q-item-label lines="1">
+          <q-item-section middle>
+            <q-item-label lines="1" v-if="$q.screen.gt.sm">
               <q-chip color="secondary" v-for="instructor in tutorial.instructors" :key="instructor.id" size="15px">
                 <q-avatar>
                   <q-img :src="instructor.photo_url" />

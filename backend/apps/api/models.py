@@ -215,6 +215,12 @@ class Registration(models.Model):
         unique=True,
         help_text=_("Identificador único da inscrição, usado para certificados e verificações"),
     )
+    present = models.BooleanField(
+        _("Presente"),
+        default=False,
+        help_text=_("Indica se o participante esteve presente no tutorial"),
+    )
+
 
     class Meta:
         verbose_name = _("Inscrição")
