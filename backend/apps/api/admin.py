@@ -10,11 +10,7 @@ def attendee_present(modeladmin, request, queryset):
     Mark selected attendees as present.
     """
     count = queryset.update(present=True)
-    modeladmin.message_user(
-        request,
-        _(f"{count} inscrição(ões) marcadas como presente(s)."),
-        messages.SUCCESS
-    )
+    modeladmin.message_user(request, _(f"{count} inscrição(ões) marcadas como presente(s)."), messages.SUCCESS)
 
 
 @admin.action(description=_("Marcar como ausente"))
@@ -23,24 +19,44 @@ def attendee_absent(modeladmin, request, queryset):
     Mark selected attendees as absent.
     """
     count = queryset.update(present=False)
-    modeladmin.message_user(
-        request,
-        _(f"{count} inscrição(ões) marcadas como ausente(s)."),
-        messages.SUCCESS
-    )
+    modeladmin.message_user(request, _(f"{count} inscrição(ões) marcadas como ausente(s)."), messages.SUCCESS)
+
+
+class EventCertificateSignerInline(admin.TabularInline):
+    model = models.EventCertificateSigner
+    extra = 1
 
 
 class RegistrationAdmin(admin.ModelAdmin):
     list_per_page = 20
-    list_display = ("attendee__full_name", "attendee__email", "tutorial__title", "tutorial__event__title")
+    list_display = (
+        "attendee__full_name",
+        "attendee__email",
+        "tutorial__title",
+        "tutorial__event__title",
+        "confirmed",
+        "present",
+    )
     search_fields = ("attendee__full_name", "tutorial__title")
     list_filter = ("tutorial__title", "tutorial__event__title", "confirmed")
     ordering = ("-tutorial__start_datetime", "tutorial__title", "attendee__full_name")
     actions = [attendee_present, attendee_absent]
+    autocomplete_fields = ("attendee",)
 
 
-admin.site.register(models.Event)
+class AttendeeAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "email")
+    search_fields = ("full_name", "email")
+    ordering = ("full_name",)
+
+
+@admin.register(models.Event)
+class EventAdmin(admin.ModelAdmin):
+    inlines = [EventCertificateSignerInline]
+
+
 admin.site.register(models.Tutorial)
-admin.site.register(models.Attendee)
+admin.site.register(models.Attendee, AttendeeAdmin)
 admin.site.register(models.Instructor)
+admin.site.register(models.CertificateSigner)
 admin.site.register(models.Registration, RegistrationAdmin)
