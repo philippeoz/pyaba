@@ -12,6 +12,8 @@ dependencies = [
     "markdown>=3.8",
     "pillow>=11.2.1",
     "python-decouple>=3.8",
+    "selenium>=4.34.2",
+    "webdriver-manager>=4.0.2",
     "whitenoise[brotli]>=6.9.0",
 ]
 
