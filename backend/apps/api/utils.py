@@ -5,7 +5,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-def html_to_pdf(html_content, page_width=8.36, page_height=11.82):
+def html_to_pdf(html_content, page_width=8.27, page_height=11.69):
     """
     Converts HTML content to PDF using Selenium and ChromeDriver.
 

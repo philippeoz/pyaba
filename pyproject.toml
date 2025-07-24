@@ -29,3 +29,6 @@ dev = [
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "backend.config.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
+
+[tool.black]
+line-length = 120
