@@ -1,4 +1,6 @@
 import uuid
+import base64
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
@@ -85,6 +87,13 @@ class CertificateSigner(models.Model):
 
     name = models.CharField(_("Nome"), max_length=255)
     title = models.CharField(_("Título"), max_length=255)
+    signature_image = models.ImageField(
+        _("Imagem da Assinatura"),
+        upload_to="signatures/",
+        blank=True,
+        null=True,
+        help_text=_("Imagem da assinatura do signatário, usada nos certificados"),
+    )
 
     class Meta:
         verbose_name = _("Signatário do Certificado")
@@ -92,6 +101,16 @@ class CertificateSigner(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.title}"
+
+    @property
+    def signature_image_base64(self):
+        """
+        Returns the base64 encoded string of the signature image if it exists.
+        """
+        if self.signature_image:
+            with self.signature_image.open("rb") as img_file:
+                return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode('utf-8')}"
+        return None
 
 
 class EventCertificateSigner(models.Model):
@@ -350,8 +369,13 @@ class Registration(models.Model):
             raise ValueError(_("O certificado só pode ser gerado para participantes presentes."))
 
         pdf_file_content = html_to_pdf(self.render_certificate())
-        pdf_file_name = f"certificate_{self.uuid}.pdf"
+        pdf_file_name = f"{self.uuid}.pdf"
         self.certificate_pdf.save(pdf_file_name, ContentFile(pdf_file_content), save=False)
+
+        # pdf_file_content = html_to_pdf(self.render_certificate())
+        # pdf_file_name = f"{self.uuid}.html"
+        # self.certificate_pdf.save(pdf_file_name, ContentFile(self.render_certificate()), save=False)
+
         self.save()
 
 
