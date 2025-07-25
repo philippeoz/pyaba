@@ -226,15 +226,11 @@ class Tutorial(models.Model):
         if self.has_started:
             raise ValueError(_("O tutorial já começou, não é possível inscrever novos participantes."))
 
-        return True
-
     def subscribe(self, attendee):
         """
         Method to register an attendee for the tutorial
         """
-        if not self.can_subscribe(attendee):
-            raise ValueError(_("Não é possível inscrever o participante neste tutorial."))
-
+        self.can_subscribe(attendee)
         registration = Registration(tutorial=self, attendee=attendee)
         registration.save()
         return registration
