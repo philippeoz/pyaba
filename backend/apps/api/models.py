@@ -437,9 +437,8 @@ class Registration(models.Model):
         )
 
         email.content_subtype = "html"
-        self.certificate_pdf.open("rb")
-        email.attach(self.certificate_pdf.name, self.certificate_pdf.read(), "application/pdf")
-        self.certificate_pdf.close()
+        with self.certificate_pdf.open("rb") as f:
+            email.attach(self.certificate_pdf.name, f.read(), "application/pdf")
         email.send(fail_silently=False)
 
         self.certificate_sent = True
