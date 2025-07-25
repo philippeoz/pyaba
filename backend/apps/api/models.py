@@ -1,15 +1,22 @@
 import uuid
+import base64
+import logging
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator
+from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.dispatch import receiver
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.template import Template, Context
+from django.urls import reverse
 from django.conf import settings
 
 from apps.api.validators import cpf_validator
+from apps.api.utils import html_to_pdf
 
 
 class Event(models.Model):
@@ -44,6 +51,17 @@ class Event(models.Model):
         blank=True,
         null=True,
     )
+    certificate_template = models.FileField(
+        _("Modelo de certificado"),
+        upload_to="certificate_templates/",
+        blank=True,
+        null=True,
+        help_text=_(
+            "Arquivo HTML que será usado como modelo para os certificados emitidos para os tutoriais deste evento"
+            " (use as variáveis: {{ attendee_name }}, {{ tutorial_title }}, {{ event_title }}, "
+            "{{ event_date }}, {{ event_city }}, {{ hours }})"
+        ),
+    )
 
     class Meta:
         verbose_name = _("Evento")
@@ -64,18 +82,91 @@ class Event(models.Model):
         return super().save(*args, **kwargs)
 
 
+class CertificateSigner(models.Model):
+    """
+    Model representing a certificate signer for an event
+    """
+
+    name = models.CharField(_("Nome"), max_length=255)
+    title = models.CharField(_("Título"), max_length=255)
+    signature_image = models.ImageField(
+        _("Imagem da Assinatura"),
+        upload_to="signatures/",
+        blank=True,
+        null=True,
+        help_text=_("Imagem da assinatura do signatário, usada nos certificados"),
+    )
+
+    class Meta:
+        verbose_name = _("Signatário do Certificado")
+        verbose_name_plural = _("Signatários dos Certificados")
+
+    def __str__(self):
+        return f"{self.name} - {self.title}"
+
+    @property
+    def signature_image_base64(self):
+        """
+        Returns the base64 encoded string of the signature image if it exists.
+        """
+        if self.signature_image:
+            with self.signature_image.open("rb") as img_file:
+                return f"data:image/png;base64,{base64.b64encode(img_file.read()).decode('utf-8')}"
+        return None
+
+
+class EventCertificateSigner(models.Model):
+    """
+    Model representing the relationship between an event and its certificate signers
+    """
+
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name="certificate_signers",
+        verbose_name=_("Evento"),
+    )
+    signer = models.ForeignKey(
+        CertificateSigner,
+        on_delete=models.CASCADE,
+        related_name="event_signers",
+        verbose_name=_("Signatário"),
+    )
+    order = models.PositiveIntegerField(
+        _("Ordem"),
+        default=1,
+        help_text=_("Ordem de exibição dos signatários no certificado, começando do 1"),
+    )
+
+    class Meta:
+        verbose_name = _("Signatário do Certificado do Evento")
+        verbose_name_plural = _("Signatários dos Certificados do Evento")
+        unique_together = ("event", "signer")
+
+    def __str__(self):
+        return f"{self.signer.name} ({self.event.title})"
+
+
 class Tutorial(models.Model):
     """
     Model representing a tutorial within an event
     """
 
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="tutorials", verbose_name=_("Evento"))
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+        related_name="tutorials",
+        verbose_name=_("Evento"),
+    )
     title = models.CharField(_("Título"), max_length=255)
     start_datetime = models.DateTimeField(_("Início"))
     end_datetime = models.DateTimeField(_("Fim"))
     vacancies = models.PositiveIntegerField(_("Vagas"), validators=[MinValueValidator(1)])
     duration = models.DurationField(
-        _("Duração"), help_text=_("Duração do tutorial em horas, minutos e segundos"), blank=True, null=True
+        _("Duração"),
+        help_text=_("Duração do tutorial em horas, minutos e segundos"),
+        blank=True,
+        null=True,
     )
     location = models.CharField(
         _("Localização"),
@@ -119,19 +210,27 @@ class Tutorial(models.Model):
 
         return super().save(*args, **kwargs)
 
-    def subscribe(self, attendee):
+    def can_subscribe(self, attendee):
         """
-        Method to register an attendee for the tutorial
+        Check if an attendee can be subscribed to the tutorial.
         """
         if self.registrations.filter(attendee=attendee).exists():
             raise ValueError(_("Este participante já está inscrito neste tutorial."))
 
-        if self.confirmed_registrations.count() >= self.vacancies:
+        if not self.has_slots_available:
             raise ValueError(_("Não há vagas disponíveis para este tutorial."))
 
         if not attendee.is_available_for(self):
             raise ValueError(_("O participante não está disponível para este tutorial."))
 
+        if self.has_started:
+            raise ValueError(_("O tutorial já começou, não é possível inscrever novos participantes."))
+
+    def subscribe(self, attendee):
+        """
+        Method to register an attendee for the tutorial
+        """
+        self.can_subscribe(attendee)
         registration = Registration(tutorial=self, attendee=attendee)
         registration.save()
         return registration
@@ -149,6 +248,13 @@ class Tutorial(models.Model):
         Check if there are available slots for the tutorial
         """
         return self.confirmed_registrations.count() < self.vacancies
+
+    @property
+    def has_started(self):
+        """
+        Check if the tutorial has started based on the current time.
+        """
+        return timezone.localtime(timezone.now()) >= timezone.localtime(self.start_datetime)
 
 
 class Instructor(models.Model):
@@ -190,7 +296,8 @@ class Attendee(models.Model):
         Check if the attendee is available for the given tutorial
         """
         return not self.registrations.filter(
-            tutorial__start_datetime__lt=tutorial.end_datetime, tutorial__end_datetime__gt=tutorial.start_datetime
+            tutorial__start_datetime__lt=tutorial.end_datetime,
+            tutorial__end_datetime__gt=tutorial.start_datetime,
         ).exists()
 
 
@@ -200,13 +307,18 @@ class Registration(models.Model):
     """
 
     tutorial = models.ForeignKey(
-        Tutorial, on_delete=models.CASCADE, related_name="registrations", verbose_name=_("Tutorial")
+        Tutorial,
+        on_delete=models.CASCADE,
+        related_name="registrations",
+        verbose_name=_("Tutorial"),
     )
     attendee = models.ForeignKey(
-        Attendee, on_delete=models.CASCADE, related_name="registrations", verbose_name=_("Participante")
+        Attendee,
+        on_delete=models.CASCADE,
+        related_name="registrations",
+        verbose_name=_("Participante"),
     )
     confirmed = models.BooleanField(_("Confirmado"), default=False)
-    certificate_generated = models.BooleanField(_("Certificado gerado"), default=False)
     registered_at = models.DateTimeField(_("Data de inscrição"), default=timezone.now)
     uuid = models.UUIDField(
         _("UUID"),
@@ -220,7 +332,18 @@ class Registration(models.Model):
         default=False,
         help_text=_("Indica se o participante esteve presente no tutorial"),
     )
-
+    certificate_pdf = models.FileField(
+        _("Certificado PDF"),
+        upload_to="certificates/",
+        blank=True,
+        null=True,
+        help_text=_("PDF do certificado emitido para o participante"),
+    )
+    certificate_sent = models.BooleanField(
+        _("Certificado enviado"),
+        default=False,
+        help_text=_("Indica se o certificado foi enviado por e-mail para o participante"),
+    )
 
     class Meta:
         verbose_name = _("Inscrição")
@@ -230,6 +353,93 @@ class Registration(models.Model):
     def __str__(self):
         return f"{self.attendee.full_name} em {self.tutorial.title}"
 
+    @property
+    def certificate_generated(self):
+        """
+        Check if the certificate has been generated for this registration.
+        """
+        return self.certificate_pdf is not None and self.certificate_pdf.name != ""
+
+    def render_certificate(self):
+        """
+        Render the certificate for the registration.
+        """
+        if not self.tutorial.event.certificate_template:
+            raise ValueError(_("O evento não possui um modelo de certificado definido."))
+
+        context = {
+            "attendee_name": self.attendee.full_name.strip().upper(),
+            "tutorial_title": self.tutorial.title,
+            "event_title": self.tutorial.event.title,
+            "event_date": self.tutorial.start_datetime.strftime("%d/%m/%Y"),
+            "event_city": self.tutorial.event.location or _("Localização não definida"),
+            "hours": (int(self.tutorial.duration.total_seconds() // 3600) if self.tutorial.duration else 0),
+            "certificate_signers": self.tutorial.event.certificate_signers.all(),
+        }
+
+        with self.tutorial.event.certificate_template.open("r") as template_file:
+            template_content = template_file.read()
+
+        return Template(template_content).render(Context(context))
+
+    def generate_certificate(self, check_confirmed=True, check_present=True):
+        """
+        Generate the PDF certificate for the registration.
+        """
+
+        if check_confirmed and not self.confirmed:
+            raise ValueError(_("O certificado só pode ser gerado para inscrições confirmadas."))
+        if check_present and not self.present:
+            raise ValueError(_("O certificado só pode ser gerado para participantes presentes."))
+
+        try:
+            pdf_file_content = html_to_pdf(self.render_certificate())
+            pdf_file_name = f"{self.uuid}.pdf"
+            self.certificate_pdf.save(pdf_file_name, ContentFile(pdf_file_content), save=False)
+        except Exception as e:
+            logging.error("Erro ao gerar certificado: %s", e)
+            raise RuntimeError(_("Erro ao gerar o certificado."))
+
+        self.save()
+
+    def send_certificate_email(self):
+        """
+        Send the certificate email to the attendee.
+        """
+        if not self.certificate_generated:
+            raise ValueError(_("O certificado ainda não foi gerado."))
+
+        subject = _('Seu Certificado de Participação no Tutorial: "{}"').format(self.tutorial.title)
+        certificate_download_link = reverse("tutorials-certificate", kwargs={"uuid": self.uuid})
+
+        html_content = render_to_string(
+            "email/tutorial_certificate.html",
+            {
+                "name": self.attendee.full_name.strip().upper(),
+                "tutorial_title": self.tutorial.title,
+                "event_title": self.tutorial.event.title,
+                "tutorial_start_date": self.tutorial.start_datetime.strftime("%d/%m/%Y"),
+                "tutorial_date_hour": timezone.localtime(self.tutorial.start_datetime).strftime("%H:%M"),
+                "tutorial_location": self.tutorial.location,
+                "certificate_download_link": f"{settings.SITE_URL}{certificate_download_link}",
+            },
+        )
+
+        email = EmailMessage(
+            subject=subject,
+            body=html_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[self.attendee.email],
+        )
+
+        email.content_subtype = "html"
+        with self.certificate_pdf.open("rb") as f:
+            email.attach(self.certificate_pdf.name, f.read(), "application/pdf")
+        email.send(fail_silently=False)
+
+        self.certificate_sent = True
+        self.save()
+
 
 @receiver(models.signals.post_save, sender=Registration)
 def send_confirmation_email(sender, instance, created, **kwargs):
@@ -237,7 +447,6 @@ def send_confirmation_email(sender, instance, created, **kwargs):
     Signal to send a confirmation email after a registration is created.
     """
     if created:
-        # send email from custom template
         subject = f"Confirmação de Inscrição no Tutorial: {instance.tutorial.title}"
 
         html_content = render_to_string(
@@ -254,7 +463,10 @@ def send_confirmation_email(sender, instance, created, **kwargs):
         )
 
         email = EmailMessage(
-            subject=subject, body=html_content, from_email=settings.DEFAULT_FROM_EMAIL, to=[instance.attendee.email]
+            subject=subject,
+            body=html_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[instance.attendee.email],
         )
         email.content_subtype = "html"
         email.send(fail_silently=False)

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Seu Certificado do Tutorial - Parabéns!</title>
+    <style>
+      body {
+        background: #f7f7fa;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        color: #222;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        background: #fff;
+        max-width: 540px;
+        margin: 32px auto;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+        padding: 32px 28px 24px 28px;
+      }
+      .header {
+        text-align: center;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #ececec;
+      }
+      .header h1 {
+        color: #10b981;
+        font-size: 1.7em;
+        margin: 0;
+        font-weight: 700;
+      }
+      .success {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #10b981;
+        font-weight: 600;
+        margin: 24px 0 12px 0;
+        font-size: 1.1em;
+      }
+      .details {
+        background: #f0fdf4;
+        border-radius: 8px;
+        padding: 18px 18px 10px 18px;
+        margin: 18px 0 24px 0;
+        font-size: 1.05em;
+      }
+      .details strong {
+        color: #059669;
+      }
+      .certificate-area {
+        margin: 28px 0 18px 0;
+        text-align: center;
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 20px;
+        border: 2px dashed #cbd5e1;
+      }
+      .certificate-icon {
+        font-size: 3em;
+        margin-bottom: 12px;
+      }
+      .certificate-info {
+        color: #475569;
+        font-size: 0.95em;
+        margin: 12px 0;
+      }
+      .download-area {
+        margin: 28px 0 18px 0;
+        text-align: center;
+      }
+      .download-link {
+        display: inline-block;
+        background: linear-gradient(90deg, #10b981 60%, #059669 100%);
+        color: #fff !important;
+        font-weight: 600;
+        padding: 14px 32px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 1.13em;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+        transition: background 0.2s;
+        margin-top: 8px;
+      }
+      .download-link:hover {
+        background: linear-gradient(90deg, #059669 60%, #10b981 100%);
+      }
+      .important-note {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 12px 16px;
+        margin: 24px 0;
+        border-radius: 0 6px 6px 0;
+        font-size: 0.95em;
+      }
+      .footer {
+        margin-top: 32px;
+        font-size: 0.97em;
+        color: #666;
+        text-align: center;
+      }
+      .signature {
+        margin-top: 24px;
+        color: #222;
+      }
+      .auto {
+        color: #aaa;
+        font-size: 0.93em;
+        margin-top: 18px;
+      }
+      a {
+        color: #10b981;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Certificado Disponível</h1>
+      </div>
+      <p>
+        Olá <strong>{{ name }}</strong>,
+      </p>
+      <div class="success">
+        <span>🎉</span>
+        <span>Parabéns pela conclusão do tutorial!</span>
+      </div>
+      <p>
+        É com grande satisfação que enviamos seu certificado de participação no tutorial <strong>{{ tutorial_title }}</strong>, realizado durante o evento <strong>{{ event_title }}</strong>.
+      </p>
+      <div class="details">
+        <div>
+          <strong>📅 Data de realização:</strong> {{ tutorial_start_date }}
+        </div>
+        <div>
+          <strong>🕒 Horário:</strong> {{ tutorial_date_hour }}
+        </div>
+        <div>
+          <strong>📍 Local:</strong> {{ tutorial_location }}
+        </div>
+        <div>
+          <strong>👥 Participante:</strong> {{ name }}
+        </div>
+      </div>
+
+      <div class="certificate-area">
+        <div class="certificate-icon">📜</div>
+        <p style="margin: 0; font-weight: 600; color: #1e293b;">Seu certificado está anexado a este email</p>
+        <p class="certificate-info">Arquivo em formato PDF pronto para download e impressão</p>
+      </div>
+
+      <div class="download-area">
+        <p style="margin-bottom: 12px; font-size: 1.08em;">Você também pode acessar seu certificado através do link abaixo:</p>
+        <a href="{{ certificate_download_link }}" class="download-link" target="_blank">Baixar Certificado</a>
+      </div>
+
+      <div class="important-note">
+        <strong>💡 Dica:</strong> Guarde bem seu certificado! Ele comprova sua participação no tutorial e pode ser útil para seu desenvolvimento profissional e acadêmico.
+      </div>
+
+      <p>Agradecemos sua participação e esperamos que o conteúdo tenha sido proveitoso para seu aprendizado.</p>
+
+      <div class="signature">
+        <p>Mais uma vez, parabéns!</p>
+        <p>
+          Atenciosamente,<br />
+          <strong>Equipe de Organização</strong><br />
+          {{ event_title }}
+        </p>
+      </div>
+      <div class="footer auto">
+        <em>Este e-mail foi enviado automaticamente. Por favor, não responda diretamente a ele.</em>
+      </div>
+    </div>
+  </body>
+</html>

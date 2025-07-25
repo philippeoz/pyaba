@@ -11,5 +11,7 @@ wheels/
 
 .vscode
 .env
+.config
 
 backend/db.sqlite3
+backend/media

@@ -33,12 +33,18 @@ def index(request, slug=None):
         request,
         "index.html",
         {
-            "title": (event and f"{event.title} | Tutoriais") or _("Tutoriais | Pyaba 🐟"),
+            "title": (event and f"{event.title} | Tutoriais")
+            or _("Tutoriais | Pyaba 🐟"),
             "description": (event and event.description)
             or _("Inscreva-se nos tutoriais dos eventos da sua comunidade! 🥰"),
-            "image_url": (event and settings.SITE_URL + reverse("event-image", kwargs={"pk": event.pk}))
+            "image_url": (
+                event
+                and settings.SITE_URL + reverse("event-image", kwargs={"pk": event.pk})
+            )
             or "tutorial.jpg",
-            "absolute_url": f"{settings.SITE_URL}/{slug}/" if slug else settings.SITE_URL,
+            "absolute_url": (
+                f"{settings.SITE_URL}/{slug}/" if slug else settings.SITE_URL
+            ),
         },
     )
 
@@ -103,7 +109,9 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(
             {
                 **serializer.data,
-                "tutorials": TutorialReadOnlySerializer(instance.tutorials.all(), many=True).data,
+                "tutorials": TutorialReadOnlySerializer(
+                    instance.tutorials.all(), many=True
+                ).data,
             }
         )
 
@@ -127,12 +135,17 @@ class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
         try:
             uuid.UUID(uuid_string)
         except ValueError:
-            return Response({"error": _("Invalid UUID")}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": _("Invalid UUID")}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
             registration = Registration.objects.get(uuid=uuid_string)
         except Registration.DoesNotExist:
-            return Response({"error": _("Registration not found")}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": _("Registration not found")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if registration.tutorial.has_slots_available:
             registration.confirmed = True
@@ -160,7 +173,8 @@ class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
 
         if not pk or not cpf or len(cpf) != 11 or not cpf.isdigit():
             return Response(
-                {"error": _("tutorial_id and correct cpf are required")}, status=status.HTTP_400_BAD_REQUEST
+                {"error": _("tutorial_id and correct cpf are required")},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         if birthday:
@@ -175,7 +189,9 @@ class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
         attendee, created = Attendee.objects.get_or_create(cpf=cpf)
 
         if created and (not name or not email or not birthday):
-            raise ValueError(_("Name, email, and birthday are required for new attendees."))
+            raise ValueError(
+                _("Name, email, and birthday are required for new attendees.")
+            )
 
         attendee.full_name = name or attendee.full_name
         attendee.email = email or attendee.email
@@ -185,7 +201,10 @@ class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
         try:
             tutorial = Tutorial.objects.get(id=pk)
         except Tutorial.DoesNotExist:
-            return Response({"error": _("Tutorial with this ID does not exist")}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": _("Tutorial with this ID does not exist")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         try:
             registration = tutorial.subscribe(attendee)
@@ -203,18 +222,25 @@ class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
 
         if not pk or not cpf or len(cpf) != 11 or not cpf.isdigit():
             return Response(
-                {"error": _("tutorial_id and correct cpf are required")}, status=status.HTTP_400_BAD_REQUEST
+                {"error": _("tutorial_id and correct cpf are required")},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
             attendee = Attendee.objects.get(cpf=cpf)
         except Attendee.DoesNotExist:
-            return Response({"error": _("Attendee with this CPF does not exist")}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": _("Attendee with this CPF does not exist")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         try:
             tutorial = Tutorial.objects.get(id=pk)
         except Tutorial.DoesNotExist:
-            return Response({"error": _("Tutorial with this ID does not exist")}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": _("Tutorial with this ID does not exist")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         try:
             registration = tutorial.registrations.get(attendee=attendee)
@@ -222,7 +248,8 @@ class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({"unsubscribed": True})
         except Registration.DoesNotExist:
             return Response(
-                {"error": _("Attendee is not subscribed to this tutorial")}, status=status.HTTP_400_BAD_REQUEST
+                {"error": _("Attendee is not subscribed to this tutorial")},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
     @action(detail=False, methods=["post"])
@@ -234,7 +261,10 @@ class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
         cpf = request.data.get("cpf")
 
         if not tutorial_id or not cpf or len(cpf) != 11 or not cpf.isdigit():
-            return Response({"error": _("tutorial_id and cpf are required")}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": _("tutorial_id and cpf are required")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             attendee = Attendee.objects.get(cpf=cpf)
@@ -244,10 +274,50 @@ class TutorialViewSet(viewsets.ReadOnlyModelViewSet):
         try:
             tutorial = Tutorial.objects.get(id=tutorial_id)
         except Tutorial.DoesNotExist:
-            return Response({"error": _("Tutorial with this ID does not exist")}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": _("Tutorial with this ID does not exist")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         try:
             registration = tutorial.registrations.get(attendee=attendee)
-            return Response({"subscribed": registration.confirmed, "registration_id": registration.id})
+            return Response(
+                {
+                    "subscribed": registration.confirmed,
+                    "registration_id": registration.id,
+                }
+            )
         except Registration.DoesNotExist:
-            return Response({"subscribed": False, "available": attendee.is_available_for(tutorial)})
+            return Response(
+                {"subscribed": False, "available": attendee.is_available_for(tutorial)}
+            )
+
+    @action(detail=False, methods=["get"], url_path="certificate/(?P<uuid>[^/.]+)")
+    def certificate(self, request, uuid=None):
+        """
+        Download the attendee's certificate for a tutorial if generated.
+        """
+        if not uuid:
+            return Response(
+                {"error": _("UUID is required")}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            registration = Registration.objects.get(uuid=uuid)
+        except Registration.DoesNotExist:
+            return Response(
+                {"error": _("Registration not found")}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        if not registration.certificate_generated:
+            return Response(
+                {"error": _("Certificate not generated yet")},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        return FileResponse(
+            registration.certificate_pdf.open(),
+            content_type="application/pdf",
+            as_attachment=True,
+            filename=f"{uuid}.pdf",
+        )

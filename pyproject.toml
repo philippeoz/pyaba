@@ -12,6 +12,8 @@ dependencies = [
     "markdown>=3.8",
     "pillow>=11.2.1",
     "python-decouple>=3.8",
+    "selenium>=4.34.2",
+    "webdriver-manager>=4.0.2",
     "whitenoise[brotli]>=6.9.0",
 ]
 
@@ -27,3 +29,6 @@ dev = [
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "backend.config.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
+
+[tool.black]
+line-length = 120
