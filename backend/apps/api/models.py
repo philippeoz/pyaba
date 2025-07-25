@@ -401,7 +401,7 @@ class Registration(models.Model):
             pdf_file_name = f"{self.uuid}.pdf"
             self.certificate_pdf.save(pdf_file_name, ContentFile(pdf_file_content), save=False)
         except Exception as e:
-            logging.error(f"Erro ao gerar certificado: {e}")
+            logging.error("Erro ao gerar certificado: %s", e)
             raise RuntimeError(_("Erro ao gerar o certificado."))
 
         self.save()
