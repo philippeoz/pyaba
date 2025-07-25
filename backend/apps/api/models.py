@@ -1,5 +1,6 @@
 import uuid
 import base64
+import logging
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -395,9 +396,13 @@ class Registration(models.Model):
         if check_present and not self.present:
             raise ValueError(_("O certificado só pode ser gerado para participantes presentes."))
 
-        pdf_file_content = html_to_pdf(self.render_certificate())
-        pdf_file_name = f"{self.uuid}.pdf"
-        self.certificate_pdf.save(pdf_file_name, ContentFile(pdf_file_content), save=False)
+        try:
+            pdf_file_content = html_to_pdf(self.render_certificate())
+            pdf_file_name = f"{self.uuid}.pdf"
+            self.certificate_pdf.save(pdf_file_name, ContentFile(pdf_file_content), save=False)
+        except Exception as e:
+            logging.error(f"Erro ao gerar certificado: {e}")
+            raise RuntimeError(_("Erro ao gerar o certificado."))
 
         self.save()
 
@@ -432,8 +437,11 @@ class Registration(models.Model):
         )
 
         email.content_subtype = "html"
+        self.certificate_pdf.open("rb")
         email.attach(self.certificate_pdf.name, self.certificate_pdf.read(), "application/pdf")
+        self.certificate_pdf.close()
         email.send(fail_silently=False)
+
         self.certificate_sent = True
         self.save()
 

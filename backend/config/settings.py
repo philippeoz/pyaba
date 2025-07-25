@@ -167,7 +167,7 @@ EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="my@mail.com")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="my_pass")
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
-DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="noreply@mail.com")
+DEFAULT_FROM_EMAIL = f"Pyaba 🐟 <{config('DEFAULT_FROM_EMAIL', default='noreply@mail.com')}>"
 
 SITE_URL = config("SITE_URL", default="http://localhost:9000")
 
