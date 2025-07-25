@@ -23,25 +23,25 @@ def html_to_pdf(html_content, page_width=8.27, page_height=11.69):
     driver = webdriver.Chrome(options=options)
 
     try:
-        with tempfile.NamedTemporaryFile(delete=True, suffix=".html") as temp_html_file:
-            temp_html_file.write(html_content.encode("utf-8"))
-            temp_html_file.flush()
+        temp_html_file = tempfile.NamedTemporaryFile(delete=True, suffix=".html")
+        temp_html_file.write(html_content.encode("utf-8"))
+        temp_html_file.flush()
 
-            driver.get(f"file://{temp_html_file.name}")
-            driver.execute_script("return document.fonts.ready")
-            pdf_content = driver.execute_cdp_cmd(
-                "Page.printToPDF",
-                {
-                    "printBackground": True,
-                    "paperWidth": page_width,
-                    "paperHeight": page_height,
-                    "marginTop": 0,
-                    "marginBottom": 0,
-                    "marginLeft": 0,
-                    "marginRight": 0,
-                },
-            )
+        driver.get(f"file://{temp_html_file.name}")
+        driver.execute_script("return document.fonts.ready")
+        pdf_content = driver.execute_cdp_cmd(
+            "Page.printToPDF",
+            {
+                "printBackground": True,
+                "paperWidth": page_width,
+                "paperHeight": page_height,
+                "marginTop": 0,
+                "marginBottom": 0,
+                "marginLeft": 0,
+                "marginRight": 0,
+            },
+        )
 
-            return base64.b64decode(pdf_content["data"])
+        return base64.b64decode(pdf_content["data"])
     finally:
         driver.quit()
