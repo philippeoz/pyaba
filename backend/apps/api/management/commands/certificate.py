@@ -26,6 +26,11 @@ class Command(BaseCommand):
             action="store_true",
             help="Ignore registrations marked as present.",
         )
+        parser.add_argument(
+            "--ignore-sent",
+            action="store_true",
+            help="Ignore registrations that have already sent the certificate email.",
+        )
 
     def handle(self, *args, **options):
         """Handle the command execution logic."""
@@ -44,6 +49,8 @@ class Command(BaseCommand):
                 registrations = registrations.filter(confirmed=True)
             if not options["ignore_present"]:
                 registrations = registrations.filter(present=True)
+            if not options["ignore_sent"]:
+                registrations = registrations.filter(certificate_sent=False)
 
             self.stdout.write(
                 "\n\n{} ({})\n".format(self.style.HTTP_INFO(tutorial.title), self.style.WARNING(registrations.count()))
@@ -55,16 +62,22 @@ class Command(BaseCommand):
                 )
 
                 if not options["skip_generation"]:
-                    registration.generate_certificate(
-                        check_confirmed=not options["ignore_confirmed"], check_present=not options["ignore_present"]
-                    )
                     self.stdout.write(" 📄", ending="")
-                    self.stdout.write("✅", ending="")
+                    try:
+                        registration.generate_certificate(
+                            check_confirmed=not options["ignore_confirmed"], check_present=not options["ignore_present"]
+                        )
+                        self.stdout.write("✅", ending="")
+                    except Exception as e:
+                        self.stdout.write("❌", ending=f" {e}")
 
                 if not options["skip_email"]:
-                    registration.send_certificate_email()
                     self.stdout.write(" 📧", ending="")
-                    self.stdout.write("✅", ending="")
+                    try:
+                        registration.send_certificate_email()
+                        self.stdout.write("✅", ending="")
+                    except Exception as e:
+                        self.stdout.write("❌", ending=f" {e}")
 
             self.stdout.write("\n")
 
